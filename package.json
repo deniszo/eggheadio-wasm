@@ -1,0 +1,17 @@
+{
+  "name": "eggheadio-wasm",
+  "version": "1.0.0",
+  "description": "Intro to wasm",
+  "main": "app.js",
+  "scripts": {
+    "start": "webpack-dev-server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "https://github.com/faliah/eggheadio-wasm.git",
+  "author": "Denis Zolkin @faliah",
+  "license": "ISC",
+  "devDependencies": {
+    "webpack": "^2.6.1",
+    "webpack-dev-server": "^2.4.5"
+  }
+}
