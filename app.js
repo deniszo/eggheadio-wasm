@@ -1,17 +1,34 @@
 (function init(w) {
-	testWasm(w);
-	cCompiled(w);
+	testWasm();
+	cCompiled();
+	callJsFnFromWasm();
 })(window);
 
-function testWasm(window) {
-	fetchAndInstantiateWasm(getWasm('test')).then(exports => {
-		window.wasmSqrt = exports.sqrt;
+function testWasm() {
+	fetchAndInstantiateWasm(getWasm('test')).then(({ sqrt }) => {
+		cGroup('testWasm', () => {
+			console.log('wasmSqrt(25) ->', sqrt(25));
+		});
 	});
 }
 
-function cCompiled(window) {
-	fetchAndInstantiateWasm(getWasm('c_compiled')).then(exports => {
-		window.getSqrt = exports.getSqrt;
+function cCompiled() {
+	fetchAndInstantiateWasm(getWasm('c_compiled')).then(({ getSqrt }) => {
+		cGroup('cCompiled', () => {
+			console.log('getSqrt(25) ->', getSqrt(25));
+		});
+	});
+}
+
+function callJsFnFromWasm() {
+	fetchAndInstantiateWasm(getWasm('call_js_fn_from_wasm'), {
+		env: {
+			consoleLog: num => console.log(num),
+		},
+	}).then(({ getSqrt }) => {
+		cGroup('callJsFnFromWasm', () => {
+			console.log(getSqrt(5));
+		});
 	});
 }
 
@@ -28,4 +45,19 @@ function fetchAndInstantiateWasm(url, imports = {}) {
 
 function getWasm(fileName) {
 	return `./wasm/${fileName}.wasm`;
+}
+
+function safeExecute(fn, errorMessage) {
+	try {
+		fn();
+	} catch (e) {
+		console.error(errorMessage);
+		console.log(e);
+	}
+}
+
+function cGroup(groupName, fn) {
+	console.group(groupName);
+	safeExecute(fn, `${groupName} failed executing, due to the following error:`);
+	console.groupEnd();
 }
