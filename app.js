@@ -1,13 +1,18 @@
 (function init(w) {
 	testWasm(w);
+	cCompiled(w);
 })(window);
 
 function testWasm(window) {
-	fetchAndInstantiateWasm('./test.wasm').then(storeSqrtRef);
+	fetchAndInstantiateWasm(getWasm('test')).then(exports => {
+		window.wasmSqrt = exports.sqrt;
+	});
+}
 
-	function storeSqrtRef({ sqrt }) {
-		window.wasmSqrt = sqrt;
-	}
+function cCompiled(window) {
+	fetchAndInstantiateWasm(getWasm('c_compiled')).then(exports => {
+		window.getSqrt = exports.getSqrt;
+	});
 }
 
 function fetchAndInstantiateWasm(url, imports = {}) {
@@ -19,4 +24,8 @@ function fetchAndInstantiateWasm(url, imports = {}) {
 		.then(WebAssembly.compile)
 		.then(module => WebAssembly.instantiate(module, imports))
 		.then(instance => instance.exports);
+}
+
+function getWasm(fileName) {
+	return `./wasm/${fileName}.wasm`;
 }
