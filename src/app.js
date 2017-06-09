@@ -6,10 +6,10 @@ import lesson5 from './lessons/5_write_to_wasm_memory_from_js';
 import lesson7 from './lessons/7_allocate_dynamic_memory_in_wasm_with_malloc';
 
 (() => {
-	lesson1();
-	lesson2();
-	lesson3();
-	lesson4();
-	lesson5();
-	lesson7();
+  lesson1();
+  lesson2();
+  lesson3();
+  lesson4();
+  lesson5();
+  lesson7();
 })(window);
